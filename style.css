@@ -1,0 +1,57 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.tester {
+    display: block;
+    margin: 10px auto;
+    width: 95%;
+    max-width: 700px;
+    margin-bottom: 100px;
+}
+
+textarea.input {
+    resize: vertical;
+    transition: 0s;
+}
+
+hr {
+    border: none;
+    width: 95%;
+    display: block;
+    margin: 15px auto;
+    height: 2px;
+    background-color: #222;
+}
+
+#d1, #d2 {
+    display: block;
+    margin: 15px auto;
+    border-left: 3px solid red;
+    padding: 23px;
+    word-wrap: break-word;
+    overflow: hidden;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    font-family: var(--font-psw);
+    font-size: 1.24em;
+    letter-spacing: 1px;
+}
+
+.btn-sequence {
+    margin-bottom: 10px;
+}
+
+label {
+    margin-top: 15px;
+}

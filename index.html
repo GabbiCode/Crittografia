@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cripto Example</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <!-- librerie esterne -->
+    <script src="extension/seedrandom.js"></script>
+    <script src="extension/jsSHA.js"></script>
+    <!-- includo le classi -->
+    <script src="class/Codifica.js"></script>
+    <script src="class/OperazioniCrittografiche.js"></script>
+    <script src="class/Hash.js"></script>
+    <script src="class/OperazioniLogiche.js"></script>
+    <script src="class/Sbox.js"></script>
+    <!-- --- -->
+    <script src="extension/classi.js"></script>
+    <script src="cipher.js"></script>
+    <script src="script.js"></script>
+    <script src="../js/script.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <section class="glass-container tester">
+            <h1>Test Tool</h1>
+            <div class="btn-sequence m-10">
+                <button title="Genera Chiave" type="button" class="btn apri_sezione" data-target="genera_chiave">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                    </svg>
+                </button>
+                <button type="button" class="btn apri_sezione" data-target="sezione_cifra">Cifra</button>
+                <button type="button" class="btn apri_sezione" data-target="sezione_decifra">Decifra</button>
+            </div>
+            <div class="btn-container">
+                <button type="button" class="btn" onclick="test()">
+                    Esegui un test
+                </button>
+            </div>
+            <div class="sezione" id="genera_chiave">
+                <h2>Genera Chiavi Casuali</h2>
+                <label for="l_chiave">Bit Chiave</label>
+                <select class="input" title="Lunghezza chiave in BIT" onchange="generaChiaveCasuale()" name="l_chiave"
+                    id="l_chiave">
+                    <option value="32">32</option>
+                    <option value="64">64</option>
+                    <option value="128" selected>128</option>
+                    <option value="256">256</option>
+                    <option value="512">512</option>
+                    <option value="1024">1024</option>
+                </select>
+                <label for="chiave">Chiave (esadecimale)</label>
+                <textarea class="input" type="text" id="chiave" rows="4" cols="50" placeholder="chiave"
+                    disabled></textarea>
+                <div class="btn-container">
+                    <button title="Genera chiave casuale" type="button" class="btn"
+                        onclick="generaChiaveCasuale()">Genera
+                        Chiave Casuale</button>
+                    <button type="button" class="btn text copy_value check_animation" data-target="chiave"
+                        title="Copia Password">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 
+                Cifra
+             -->
+            <div class="sezione" id="sezione_cifra" style="display: none">
+                <h2>Cifra</h2>
+                <label for="testo_cifra">Testo</label>
+                <textarea type="text" class="input" rows="4" cols="50" id="testo_cifra"
+                    placeholder="Testo cifrato"></textarea>
+                <span class="btn-spawn" data-target="testo_cifra"></span>
+                <!-- --- -->
+                <label for="chiave_cifra">Chiave HEX</label>
+                <textarea type="text" class="input" rows="4" cols="50" id="chiave_cifra"
+                    placeholder="Chiave HEX"></textarea>
+                <span class="btn-spawn" data-target="chiave_cifra"></span>
+                <!-- --- -->
+                <button title="Converti" type="button" id="btn-cifra" class="btn">Cifra</button>
+                <!-- --- -->
+                <p title="Clicca per copiare" class="glass-container" id="d1"></p>
+                <button type="button" class="btn text copy_text check_animation" data-target="d1"
+                    title="Copia Testo Cifrato">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <!-- 
+                Decifra
+             -->
+            <div class="sezione" id="sezione_decifra" style="display: none">
+                <h2>Decifra</h2>
+                <label for="testo_decifra">Testo Cifrato</label>
+                <textarea type="text" class="input" rows="4" cols="50" id="testo_decifra"
+                    placeholder="Testo cifrato"></textarea>
+                <span class="btn-spawn" data-target="testo_decifra"></span>
+                <!-- --- -->
+                <label for="chiave_decifra">Chiave HEX</label>
+                <textarea type="text" class="input" rows="4" cols="50" id="chiave_decifra"
+                    placeholder="Chiave HEX"></textarea>
+                <span class="btn-spawn" data-target="chiave_decifra"></span>
+                <!-- --- -->
+                <button title="Converti" type="button" id="btn-decifra" class="btn">Decifra</button>
+                <!-- --- -->
+                <p title="Clicca per copiare" class="glass-container" id="d2"></p>
+                <button type="button" class="btn text copy_text check_animation" data-target="d2"
+                    title="Copia Testo Decifrato">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </section>
+    </div>
+    <img src="../img/wallpaper/w1.jpg" alt="Immagine Sfondo" class="wallpaper">
+</body>
+
+</html>
