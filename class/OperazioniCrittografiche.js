@@ -1,4 +1,6 @@
-class OperazioniCrittografiche {
+import { Codifica } from './Codifica.js';
+
+export class OperazioniCrittografiche {
     constructor() {
         this.str = new Codifica();
     }

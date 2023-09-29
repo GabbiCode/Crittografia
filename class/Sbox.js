@@ -1,4 +1,6 @@
-class Sbox {
+import { OperazioniCrittografiche } from './OperazioniCrittografiche.js';
+
+export class Sbox {
     constructor(sbox, reverse_sbox) {
         this.sbox = sbox;
         this.reverse_sbox = reverse_sbox;

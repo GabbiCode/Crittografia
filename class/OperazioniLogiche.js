@@ -1,4 +1,4 @@
-class OperazioniLogiche {
+export class OperazioniLogiche {
     constructor() {
         this.bit = null;
         this.bit0 = false;

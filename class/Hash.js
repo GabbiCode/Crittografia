@@ -1,4 +1,4 @@
-class Hash {
+export class Hash {
     /**
      * genera hash in base ai parametri passati dalla funzione
      * @param {*} testo 

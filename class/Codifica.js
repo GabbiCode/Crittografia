@@ -1,4 +1,4 @@
-class Codifica {
+export class Codifica {
     constructor(data) {
         this.data = data;
     }

@@ -1,7 +1,12 @@
+import { OperazioniLogiche } from './class/OperazioniLogiche.js';
+import { Codifica } from './class/Codifica.js';
+import { OperazioniCrittografiche } from './class/OperazioniCrittografiche.js';
+import { Hash } from './class/Hash.js';
+import { Sbox } from './class/Sbox.js';
+import { Cipher } from './cipher.js';
+
 const cripto = new OperazioniCrittografiche();
-const str = new Codifica();
 const cipher = new Cipher();
-const sbox = new Sbox();
 let cifra = document.getElementById('d1');
 let decifra = document.getElementById('d2');
 
@@ -69,23 +74,12 @@ function test() {
 }
 
 const random_frasi = [
-    'Lorem ipsum dolor sit amet',
-    'Vestibulum id metus nec odio',
-    'In faucibus, ligula nec congue ullamcorper',
-    'Duis eget ligula ac est pretium tempor faucibus ut risus.',
-    'Mauris maximus est vitae ligula vulputate porta.',
-    'Schützengrabenvernichtungspanzerkraftwagen'
-];
-
-// const random_frasi = [
-//     'Frontlage im Osten: Heute gab es einen Rückfall der Frontlage nach Osten um 90 Grad. Feindliche Kräfte scheinen geschwächt zu sein, aber wir bleiben wachsam.',
-//     'Befehle für geheime Operation: Die Operationsanweisungen für die \'Operation Roter Mond\' lauten wie folgt',
-//     'Strategischer Plan: Der strategische Plan für die kommende Woche sieht eine Reihe koordinierter Angriffe an der Westfront vor.',
-//     'Hohe Priorität: Nachricht mit hoher Priorität: Nachschub ist auf dem Weg und muss um jeden Preis geschützt werden.',
-//     'Spezieller Empfänger: Diese Nachricht ist für General Schmidt bestimmt. Die darin enthaltenen Informationen sind vertraulich.',
-//     'Nächtliche Kommunikation: Eine nächtliche Nachricht wurde gesendet und enthält Aktualisierungen zu den Truppenstellungen.',
-//     'Schützengrabenvernichtungspanzerkraftwagen'
-// ]
+    'Password1234',
+    'Ciao',
+    'La password è questa: ****',
+    'Messaggio di prova',
+    'Sto eseguendo un test'
+]
 
 function numero_casuale(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);

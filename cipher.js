@@ -1,5 +1,11 @@
-class Cipher {
-    constructor(rounds = 32) {
+import { OperazioniLogiche } from './class/OperazioniLogiche.js';
+import { Codifica } from './class/Codifica.js';
+import { OperazioniCrittografiche } from './class/OperazioniCrittografiche.js';
+import { Hash } from './class/Hash.js';
+import { Sbox } from './class/Sbox.js';
+
+export class Cipher {
+    constructor(rounds = 24) {
         this.blocchi = 128;
         this.rounds = rounds;
         this.logica = new OperazioniLogiche();
