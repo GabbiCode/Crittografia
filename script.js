@@ -30,6 +30,7 @@ function copy(testo) {
 	navigator.clipboard.writeText(testo);
 }
 
+let ultima_pagina = 'genera_chiave';
 $(document).ready(function() {
     $('#btn-cifra').on('click', () => {
         cifra_testo();
@@ -46,10 +47,21 @@ $(document).ready(function() {
     $('.apri_sezione').click((b) => {
         b = b.currentTarget;
         const target = $(b).attr('data-target');
+        if (ultima_pagina == target) return;
         document.querySelectorAll('.sezione').forEach((sezione, i) => {
-            $(sezione).fadeOut(100);
+            $(sezione).slideUp(250);
         });
-        $('#' + target).fadeIn(100);
+        $('#' + target).slideDown(250);
+        ultima_pagina = target;
+    });
+    $('#genera_chiave_casuale').click(()=>{
+        generaChiaveCasuale();    
+    })
+    $('#l_chiave').change(()=>{
+        generaChiaveCasuale();
+    });
+    $('#test_btn').click(()=>{
+        test();
     });
     generaChiaveCasuale();
     html_obj.init();
@@ -60,7 +72,9 @@ $(document).ready(function() {
 });
 
 function test() {
-    const chiave = cripto.genera_chiave_crittografica(128);
+    var l = document.getElementById('l_chiave').value;
+    l = parseInt(l);
+    const chiave = cripto.genera_chiave_crittografica(l);
     const testo = random_frasi[numero_casuale(0, random_frasi.length - 1)];
     $('#testo_cifra').val(testo);
     $('#chiave_cifra').val(chiave);

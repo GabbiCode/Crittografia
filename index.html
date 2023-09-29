@@ -11,7 +11,7 @@
     <!-- librerie esterne -->
     <script src="extension/seedrandom.js"></script>
     <script src="extension/jsSHA.js"></script>
-    <script src="extension/classi.js"></script>
+    <script src="extension/funzioni.js"></script>
     <!-- --- -->
     <script src="cipher.js" type="module"></script>
     <script src="script.js" type="module"></script>
@@ -24,27 +24,15 @@
     <div id="app">
         <section class="glass-container tester">
             <h1>Test Tool</h1>
-            <div class="btn-sequence m-10">
-                <button title="Genera Chiave" type="button" class="btn apri_sezione" data-target="genera_chiave">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
-                    </svg>
-                </button>
-                <button type="button" class="btn apri_sezione" data-target="sezione_cifra">Cifra</button>
-                <button type="button" class="btn apri_sezione" data-target="sezione_decifra">Decifra</button>
-            </div>
             <div class="btn-container">
-                <button type="button" class="btn" onclick="test()">
+                <button type="button" class="btn" id="test_btn">
                     Esegui un test
                 </button>
             </div>
             <div class="sezione" id="genera_chiave">
                 <h2>Genera Chiavi Casuali</h2>
                 <label for="l_chiave">Bit Chiave</label>
-                <select class="input" title="Lunghezza chiave in BIT" onchange="generaChiaveCasuale()" name="l_chiave"
-                    id="l_chiave">
+                <select class="input" title="Lunghezza chiave in BIT" name="l_chiave" id="l_chiave">
                     <option value="32">32</option>
                     <option value="64">64</option>
                     <option value="128" selected>128</option>
@@ -56,8 +44,7 @@
                 <textarea class="input" type="text" id="chiave" rows="4" cols="50" placeholder="chiave"
                     disabled></textarea>
                 <div class="btn-container">
-                    <button title="Genera chiave casuale" type="button" class="btn"
-                        onclick="generaChiaveCasuale()">Genera
+                    <button title="Genera chiave casuale" type="button" class="btn" id="genera_chiave_casuale">Genera
                         Chiave Casuale</button>
                     <button type="button" class="btn text copy_value check_animation" data-target="chiave"
                         title="Copia Password">
@@ -69,6 +56,16 @@
                         </svg>
                     </button>
                 </div>
+                <hr>
+                <h2>Utilizza questa libreria</h2>
+                <code class="glass-container">
+                    <!-- librerie esterne -->
+                    &lt;script src="https://gsecurity.altervista.org/gripto/extension/seedrandom.js"&gt;&lt;/script&gt;
+                    &lt;script src="https://gsecurity.altervista.org/gripto/extension/jsSHA.js"&gt;&lt;/script&gt;
+                    &lt;script src="https://gsecurity.altervista.org/gripto/extension/funzioni.js"&gt;&lt;/script&gt;
+                    <!-- Classe del Cifrario -->
+                    &lt;script src="https://gsecurity.altervista.org/gripto/cipher.js" type="module"&gt;&lt;/script&gt;
+                </code>
             </div>
             <!-- 
                 Cifra
@@ -127,6 +124,17 @@
                 </button>
             </div>
         </section>
+        <nav>
+            <button title="Genera Chiave" type="button" class="btn text apri_sezione nav" data-target="genera_chiave">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
+            </button>
+            <button type="button" class="btn text apri_sezione nav" data-target="sezione_cifra">Cifra</button>
+            <button type="button" class="btn text apri_sezione nav" data-target="sezione_decifra">Decifra</button>
+        </nav>
     </div>
     <img src="../img/wallpaper/w1.jpg" alt="Immagine Sfondo" class="wallpaper">
 </body>
