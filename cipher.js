@@ -53,8 +53,8 @@ export class Cipher {
         // inizializzo le variabili
         testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
-        // XOR
-        testo = this.xor(testo, chiavi[0]);
+        // XOR PARZIALE
+        testo = this.cripto.xor_parziale(testo, chiavi[0]);
         // SBOX
         this.sbox.genera_sbox(chiavi[0]);
         testo = this.sbox.sostituzione_completa(testo, false);
@@ -70,14 +70,15 @@ export class Cipher {
             // SBOX
             this.sbox.genera_sbox(chiave_round);
             testo = this.sbox.sostituzione_completa(testo, false);
-            // ---
+            // PERMUTA
             testo = this.round(testo, chiave_round, false);
+            console.log(this.str._binario(testo).string());
         }
         // SBOX
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, false);
-        // XOR
-        testo = this.xor(testo, chiavi[2]);
+        // XOR PARZIALE
+        testo = this.cripto.xor_parziale(testo, chiavi[2]);
         // ultime operazioni
         testo = this.cripto.ultima_fase(testo, lunghezza_blocchi_nulli);
         return testo;
@@ -94,8 +95,8 @@ export class Cipher {
         // inizializzo le variabili
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
-        // XOR
-        testo = this.xor(testo, chiavi[2]);
+        // XOR PARZIALE
+        testo = this.cripto.xor_parziale(testo, chiavi[2]);
         // SBOX
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, true);
@@ -109,8 +110,9 @@ export class Cipher {
             chiavi_decifratura.push(chiave_round);
         }
         chiavi_decifratura.reverse();
-        // PERMUTO
+        // ROUNDS
         for (let i = 0; i < this.rounds; i++) {
+            // PERMUTA
             testo = this.round(testo, chiavi_decifratura[i], true);
             // SBOX
             this.sbox.genera_sbox(chiavi_decifratura[i]);
@@ -121,8 +123,8 @@ export class Cipher {
         testo = this.sbox.sostituzione_completa(testo, true);
         // rimuovo caratteri nulli
         testo = this.cripto.rimuovi_nulli(testo, null_bits);
-        // XOR
-        testo = this.xor(testo, chiavi[0]);
+        // XOR PARZIALE
+        testo = this.cripto.xor_parziale(testo, chiavi[0]);
         // converto in formato normale
         testo = this.str._binario(testo)._utf8().string();
         return testo;
@@ -149,25 +151,32 @@ export class Cipher {
      * @returns 
      */
     round(testo, chiave, reverse) {
+        // genero i blocchi
         testo = this.cripto.blocks(testo, this.blocchi).blocks;
         const blocchi_cifrati = [];
         for (let i = 0; i < testo.length; i++) {
-            const mixed_bits = this.cripto.permuta(testo[i], chiave, reverse);
-            blocchi_cifrati.push(mixed_bits);
+            /** reverse ?
+             * true => xor -> permuta
+             * false => permuta -> xor 
+            */
+            const operazione = reverse
+                ? (t) => this.permuta_round(this.xor_round(testo[i], chiave), chiave, reverse)
+                : (t) => this.xor_round(this.permuta_round(testo[i], chiave, reverse), chiave);
+            blocchi_cifrati.push(operazione(testo[i]));
         }
+        // restituisco il testo unito
         return blocchi_cifrati.join('');
     }
     /**
-     * deriva una stringa binaria eseguendo delle xor
-     * @param {*} chiave1 
-     * @param {*} chiave2 
-     * @returns 
+     * XOR utilizzata in round
      */
-    xor(chiave1, chiave2) {
-        let result = '';
-        for (let i = 0; i < chiave1.length; i++) {
-            result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]).string();
-        }
-        return result;
+    xor_round = (t, c) => {
+        return this.cripto.xor_completa(t, c);
+    }
+    /**
+     * PERMUTA utilizzata in round
+     */
+    permuta_round = (t, c, r) => {
+        return this.cripto.permuta(t, c, r);
     }
 }

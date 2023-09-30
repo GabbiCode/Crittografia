@@ -1,8 +1,10 @@
 import { Codifica } from './Codifica.js';
+import { Logica } from './Logica.js';
 
 export class Cripto {
     constructor() {
         this.str = new Codifica();
+        this.logica = new Logica();
     }
     /**
      * suddivide la stringa binaria in blocchi di ugual misura
@@ -198,5 +200,32 @@ export class Cripto {
         // inserisco gli = al fondo della stringa
         testo = testo.join('') + null_bits + "=".repeat(conteggio);
         return testo;
+    }
+    /**
+     * deriva una stringa binaria eseguendo delle xor
+     * @param {*} chiave1 
+     * @param {*} chiave2 
+     * @returns 
+     */
+    xor_parziale(chiave1, chiave2) {
+        let result = '';
+        for (let i = 0; i < chiave1.length; i++) {
+            result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]).string();
+        }
+        return result;
+    }
+    /**
+     * deriva una stringa binaria eseguendo delle xor in maniera completa
+     * il numero di bit degli argomenti deve essere lo stesso
+     * @param {*} chiave1 
+     * @param {*} chiave2 
+     * @returns 
+     */
+    xor_completa(chiave1, chiave2) {
+        let result = '';
+        for (let i = 0; i < chiave1.length; i++) {
+            result += this.logica.xor(chiave1[i], chiave2[i]).string();
+        }
+        return result;
     }
 }
