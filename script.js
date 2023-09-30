@@ -5,11 +5,12 @@ import { Hash } from './class/Hash.js';
 import { Sbox } from './class/Sbox.js';
 import { Cipher } from './cipher.js';
 
-const cripto = new OperazioniCrittografiche();
 const cipher = new Cipher();
 let cifra = document.getElementById('d1');
 let decifra = document.getElementById('d2');
+const cripto = new OperazioniCrittografiche();
 const str = new Codifica();
+const sbox = new Sbox();
 
 function cifra_testo() {
     const testo = $('#testo_cifra').val();

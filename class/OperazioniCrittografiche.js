@@ -110,7 +110,7 @@ export class OperazioniCrittografiche {
      */
     genera_chiave_crittografica(bitLength = 128) {
         if (bitLength % 32 != 0) {
-            throw new Error("Il numero di bit deve essere una potenza di 2");
+            throw new Error("Il numero di bit deve essere una potenza di 2 e maggiore o uguale a 32 bit");
         }
         // Genera un array di byte casuali
         const randomBytes = new Uint8Array(bitLength / 8);
