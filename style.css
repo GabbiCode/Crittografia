@@ -37,14 +37,9 @@ hr {
 #d1, #d2 {
     display: block;
     margin: 15px auto;
-    border-left: 3px solid red;
-    padding: 23px;
     word-wrap: break-word;
     overflow: hidden;
-    border-radius: 0 10px 10px 0;
     font-family: var(--font-psw);
-    font-size: 1.24em;
-    letter-spacing: 1px;
 }
 
 .btn-sequence {

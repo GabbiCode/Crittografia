@@ -37,7 +37,7 @@
         <section class="glass-container tester">
             <h1># Import and Use this Algorithm</h1>
             <p>
-                Add the source code to your project, this code use ES6 module syntax:
+                Add the source code to your html head tag, this code use ES6 module syntax:
             </p>
             <pre class="glass-container"><code data-lang="html" id="html_head">&lt;script src="https://gsecurity.altervista.org/gripto/extension/jsSHA.js"&gt;&lt;/script&gt;
 &lt;script src="https://gsecurity.altervista.org/gripto/extension/seedrandom.js"&gt;&lt;/script&gt;
@@ -64,11 +64,11 @@ const cripto = new Cripto();
 */
 const hex_key = cripto.generate_encryption_key(128);
 </code></pre>
-            <button type="button" class="btn text copy_text check_animation m0" data-target="encrypt_decrypt" title="Copia Codice"></button>
+            <button type="button" class="btn text copy_text check_animation m0" data-target="generate_key" title="Copia Codice"></button>
             <p>
                 encrypt and decrypt text:
             </p>
-            <pre class="glass-container"><code data-lang="js" id="generate_key">import { Cipher, Cripto } from './cipher.js';
+            <pre class="glass-container"><code data-lang="js" id="encrypt_decrypt">import { Cipher, Cripto } from './cipher.js';
 const cipher = new Cipher();
 const cripto = new Cripto();
 // generate key using 128 bits
@@ -78,7 +78,11 @@ const plaintext = "Hello, World!";
 const encrypt_text = cipher.encrypt(plaintext, hex_key);
 // decrypt
 const decrypt_text = cipher.decrypt(encrypt_text, hex_key);</code></pre>
-<pre class="glass-container"><code data-lang="js" id="generate_key">import { Cipher } from './cipher.js';
+<button type="button" class="btn text copy_text check_animation m0" data-target="encrypt_decrypt" title="Copia Codice"></button>
+<p>
+    practical example
+</p>
+<pre class="glass-container"><code data-lang="js" id="encrypt_decrypt_example">import { Cipher } from './cipher.js';
 /*
  * Here is an example of encrypted "Hello, World!" using 128 bits key
 */
@@ -96,7 +100,7 @@ const decrypt_text = cipher.decrypt(encrypt_text, hex_key);
 /*
  * decrypt_text = Hello, World!
 */</code></pre>
-            <button type="button" class="btn text copy_text check_animation m0" data-target="encrypt_decrypt" title="Copia Codice"></button>
+            <button type="button" class="btn text copy_text check_animation m0" data-target="encrypt_decrypt_example" title="Copia Codice"></button>
             <p>
                 <a href="index.html">Come back to tester</a>
             </p>

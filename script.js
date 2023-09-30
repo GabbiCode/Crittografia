@@ -35,12 +35,6 @@ $(document).ready(function() {
     $('#btn-decifra').on('click', () => {
         decifra_testo();
     });
-    $('.copy_text').click((b) => {
-        b = b.currentTarget;
-        const target = $(b).attr('data-target');
-        const text = $('#' + target).text();
-		copy(text);
-    });
     $('.apri_sezione').click((b) => {
         b = b.currentTarget;
         const target = $(b).attr('data-target');
@@ -87,9 +81,11 @@ function test() {
 const random_frasi = [
     'Password1234',
     'Ciao',
-    'La password è questa: ****',
+    '🤑🤑😀😀😂😂',
+    '(*^_^*)',
+    '( •̀ ω •́ )',
     'Messaggio di prova',
-    'Sto eseguendo un test',
+    '100.000.000€',
     '你 - こんにちは - Привет - שלום'
 ]
 
