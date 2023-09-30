@@ -17,7 +17,7 @@ export class Cipher {
     /**
      * Cifra del testo
      * @param {*} testo stringa
-     * @param {*} chiave in formato esadecimale da 128 bit
+     * @param {*} chiave in formato esadecimale
      */
     cifra(testo, chiave) {
         // rimuovo i caratteri illegali
@@ -57,7 +57,7 @@ export class Cipher {
     /**
      * Decifra del testo
      * @param {*} testo stringa base 64
-     * @param {*} chiave in formato esadecimale da 128 bit
+     * @param {*} chiave in formato esadecimale
      */
     decifra(testo, chiave) {
         const testo_bits = this.cripto.split_testo_decifrato(testo);
@@ -95,9 +95,8 @@ export class Cipher {
         testo = this.cripto.rimuovi_nulli(testo, null_bits);
         // XOR
         testo = this.deriva(testo, chiavi[0]);
-        // rimuovo i caratteri nulli dal testo
-        testo = this.str._binario(testo).string();
         // converto in formato normale
+        testo = this.str._binario(testo).string();
         return testo;
     }
     /**

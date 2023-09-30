@@ -34,7 +34,7 @@ hr {
     background-color: #222;
 }
 
-#d1, #d2, code {
+#d1, #d2 {
     display: block;
     margin: 15px auto;
     border-left: 3px solid red;
@@ -55,9 +55,15 @@ label {
     margin-top: 15px;
 }
 
-code {
+pre {
     border: none;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: normal;
+    line-height: 1.5;
+    overflow: scroll;
+}
+
+code *, code {
+    font-family: var(--font-psw);
 }
