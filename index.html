@@ -14,7 +14,6 @@
     <!-- librerie esterne -->
     <script src="extension/seedrandom.js"></script>
     <script src="extension/jsSHA.js"></script>
-    <script src="extension/funzioni.js"></script>
     <!-- --- -->
     <script src="cipher.js" type="module"></script>
     <script src="script.js" type="module"></script>
@@ -63,11 +62,10 @@
                     </button>
                 </div>
                 <hr>
-                <h2>Utilizza questa libreria</h2>
-<pre class="glass-container"><code data-lang="html">&lt;script src="https://shorturl.at/vyHJW"&gt;&lt;/script&gt;
-&lt;script src="https://shorturl.at/vHINS"&gt;&lt;/script&gt;
-&lt;script src="https://shorturl.at/dHJQU"&gt;&lt;/script&gt;
-&lt;script src="https://shorturl.at/DLR68" type="module"&gt;&lt;/script&gt;</code></pre>
+                <h2>Utilizza questo Algoritmo</h2>
+                <p>
+                    Visualizza il tutorial: <a href="tutorial.html" target="_blank" rel="noopener noreferrer">tutorial</a>
+                </p>
             </div>
             <!-- 
                 Cifra
@@ -129,7 +127,7 @@
                 Codice Sorgente
              -->
             <div class="sezione" id="sezione_codice_sorgente" style="display:none">
-<pre class="glass-container" id="codice_cipher"><code data-lang="js">import { OperazioniLogiche } from './class/OperazioniLogiche.js';
+                <pre class="glass-container" id="codice_cipher"><code data-lang="js">import { OperazioniLogiche } from './class/OperazioniLogiche.js';
 import { Codifica } from './class/Codifica.js';
 import { OperazioniCrittografiche } from './class/OperazioniCrittografiche.js';
 import { Hash } from './class/Hash.js';
@@ -272,7 +270,6 @@ export class Cipher {
         return result;
     }
 }</code></pre>
-
             </div>
         </section>
         <nav>
@@ -285,9 +282,12 @@ export class Cipher {
             </button>
             <button type="button" class="btn text apri_sezione nav" data-target="sezione_cifra">Cifra</button>
             <button type="button" class="btn text apri_sezione nav" data-target="sezione_decifra">Decifra</button>
-            <button type="button" title="Codice Sorgente" class="btn text apri_sezione nav" data-target="sezione_codice_sorgente">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+            <button type="button" title="Codice Sorgente" class="btn text apri_sezione nav"
+                data-target="sezione_codice_sorgente">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
                 </svg>
             </button>
         </nav>

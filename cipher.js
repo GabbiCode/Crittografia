@@ -1,16 +1,24 @@
-import { OperazioniLogiche } from './class/OperazioniLogiche.js';
+import { Logica } from './class/Logica.js';
 import { Codifica } from './class/Codifica.js';
-import { OperazioniCrittografiche } from './class/OperazioniCrittografiche.js';
+import { Cripto } from './class/Cripto.js';
 import { Hash } from './class/Hash.js';
 import { Sbox } from './class/Sbox.js';
+
+export {
+    Logica,
+    Codifica,
+    Cripto,
+    Hash,
+    Sbox
+};
 
 export class Cipher {
     constructor(rounds = 24) {
         this.blocchi = 128;
         this.rounds = rounds;
-        this.logica = new OperazioniLogiche();
+        this.logica = new Logica();
         this.str = new Codifica();
-        this.cripto = new OperazioniCrittografiche();
+        this.cripto = new Cripto();
         this.hash = new Hash();
         this.sbox = new Sbox();
     }
@@ -82,7 +90,7 @@ export class Cipher {
     _cipher(testo, chiave) {
         const testo_bits = this.cripto.split_testo_decifrato(testo);
         const null_bits = parseInt(this.str._hex(testo_bits.bit.match(/\d+/g).join('')).string());
-        testo = completa_base_64(testo_bits.testo);
+        testo = this.cripto.completa_base_64(testo_bits.testo);
         // inizializzo le variabili
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);

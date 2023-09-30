@@ -1,10 +1,10 @@
-import { OperazioniCrittografiche } from './OperazioniCrittografiche.js';
+import { Cripto } from './Cripto.js';
 
 export class Sbox {
     constructor(sbox, reverse_sbox) {
         this.sbox = sbox;
         this.reverse_sbox = reverse_sbox;
-        this.cripto = new OperazioniCrittografiche();
+        this.cripto = new Cripto();
     }
     /**
      * Sostituzione di una singola stringa da 4 bit

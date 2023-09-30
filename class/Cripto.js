@@ -1,6 +1,6 @@
 import { Codifica } from './Codifica.js';
 
-export class OperazioniCrittografiche {
+export class Cripto {
     constructor() {
         this.str = new Codifica();
     }
@@ -108,7 +108,7 @@ export class OperazioniCrittografiche {
      * @param {*} bitLength valgono le potenze di due
      * @returns 
      */
-    genera_chiave_crittografica(bitLength = 128) {
+    generate_encryption_key(bitLength = 128) {
         if (bitLength % 32 != 0) {
             throw new Error("Il numero di bit deve essere una potenza di 2 e maggiore o uguale a 32 bit");
         }
@@ -147,6 +147,19 @@ export class OperazioniCrittografiche {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
+    }
+    /** 
+    * completa una stringa base 64
+    */
+    completa_base_64(base64String) {
+        const lunghezzaStringa = base64String.length;
+        const caratteriMancanti = 4 - (lunghezzaStringa % 4);
+        if (caratteriMancanti === 4) {
+            // La stringa Base64 è già completa, quindi non è necessario fare nulla.
+            return base64String;
+        }
+        // Aggiungi i caratteri "=" mancanti alla fine della stringa.
+        return base64String + "=".repeat(caratteriMancanti);
     }
     /**
      * mescola il numero di byte nulli nella stringa cifrata

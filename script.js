@@ -1,14 +1,9 @@
-import { OperazioniLogiche } from './class/OperazioniLogiche.js';
-import { Codifica } from './class/Codifica.js';
-import { OperazioniCrittografiche } from './class/OperazioniCrittografiche.js';
-import { Hash } from './class/Hash.js';
-import { Sbox } from './class/Sbox.js';
-import { Cipher } from './cipher.js';
+import { Cipher, Cripto, Sbox, Codifica } from './cipher.js';
 
 const cipher = new Cipher();
 let cifra = document.getElementById('d1');
 let decifra = document.getElementById('d2');
-const cripto = new OperazioniCrittografiche();
+const cripto = new Cripto();
 const str = new Codifica();
 const sbox = new Sbox();
 
@@ -76,7 +71,7 @@ $(document).ready(function() {
 function test() {
     var l = document.getElementById('l_chiave').value;
     l = parseInt(l);
-    const chiave = cripto.genera_chiave_crittografica(l);
+    const chiave = cripto.generate_encryption_key(l);
     const testo = random_frasi[numero_casuale(0, random_frasi.length - 1)];
     $('#testo_cifra').val(testo);
     $('#chiave_cifra').val(chiave);
@@ -105,7 +100,7 @@ function numero_casuale(min, max) {
 function generaChiaveCasuale() {
     var l = document.getElementById('l_chiave').value;
     l = parseInt(l);
-    document.getElementById('chiave').value = cripto.genera_chiave_crittografica(l);
+    document.getElementById('chiave').value = cripto.generate_encryption_key(l);
 }
 
 let html_obj = {
