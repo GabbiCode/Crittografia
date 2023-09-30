@@ -27,7 +27,7 @@ export class Cipher {
      */
     encrypt(testo, chiave) {
         try {
-            return this.cipher_(testo, chiave);
+            return this.cifrario_(testo, chiave);
         } catch (error) {
             console.log("Errore durante la cifratura: " + error);
             return ':(';
@@ -38,7 +38,7 @@ export class Cipher {
      */
     decrypt(testo, chiave) {
         try {
-            return this._cipher(testo, chiave);
+            return this._cifrario(testo, chiave);
         } catch (error) {
             console.log("Errore durante la decifratura: " + error);
             return ':(';
@@ -49,7 +49,7 @@ export class Cipher {
      * @param {*} testo stringa
      * @param {*} chiave in formato esadecimale
      */
-    cipher_(testo, chiave) {
+    cifrario_(testo, chiave) {
         // inizializzo le variabili
         testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
@@ -72,7 +72,6 @@ export class Cipher {
             testo = this.sbox.sostituzione_completa(testo, false);
             // PERMUTA
             testo = this.round(testo, chiave_round, false);
-            console.log(this.str._binario(testo).string());
         }
         // SBOX
         this.sbox.genera_sbox(chiavi[2]);
@@ -88,7 +87,8 @@ export class Cipher {
      * @param {*} testo stringa base 64
      * @param {*} chiave in formato esadecimale
      */
-    _cipher(testo, chiave) {
+    _cifrario(testo, chiave) {
+        // calcolo i bit nulli
         const testo_bits = this.cripto.split_testo_decifrato(testo);
         const null_bits = parseInt(this.str._hex(testo_bits.bit.match(/\d+/g).join('')).string());
         testo = this.cripto.completa_base_64(testo_bits.testo);
@@ -178,5 +178,11 @@ export class Cipher {
      */
     permuta_round = (t, c, r) => {
         return this.cripto.permuta(t, c, r);
+    }
+    /**
+     * esegue il log per controllare lo stato 
+     */
+    check(testo) {
+        console.log(this.str._binario(testo).base64_().string());
     }
 }
