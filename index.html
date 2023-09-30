@@ -151,13 +151,11 @@ export class Cipher {
      * @param {*} chiave in formato esadecimale
      */
     cifra(testo, chiave) {
-        // rimuovo i caratteri illegali
-        testo = this.str.illegal_characters(testo);
         // inizializzo le variabili
-        testo = this.str.binario_(testo).string();
+        testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
         // XOR
-        testo = this.deriva(testo, chiavi[0]);
+        testo = this.xor(testo, chiavi[0]);
         // SBOX
         this.sbox.genera_sbox(chiavi[0]);
         testo = this.sbox.sostituzione_completa(testo, false);
@@ -180,7 +178,7 @@ export class Cipher {
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, false);
         // XOR
-        testo = this.deriva(testo, chiavi[2]);
+        testo = this.xor(testo, chiavi[2]);
         // ultime operazioni
         testo = this.cripto.ultima_fase(testo, lunghezza_blocchi_nulli);
         return testo;
@@ -198,7 +196,7 @@ export class Cipher {
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
         // XOR
-        testo = this.deriva(testo, chiavi[2]);
+        testo = this.xor(testo, chiavi[2]);
         // SBOX
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, true);
@@ -225,9 +223,9 @@ export class Cipher {
         // rimuovo caratteri nulli
         testo = this.cripto.rimuovi_nulli(testo, null_bits);
         // XOR
-        testo = this.deriva(testo, chiavi[0]);
+        testo = this.xor(testo, chiavi[0]);
         // converto in formato normale
-        testo = this.str._binario(testo).string();
+        testo = this.str._binario(testo)._utf8().string();
         return testo;
     }
     /**
@@ -266,7 +264,7 @@ export class Cipher {
      * @param {*} chiave2 
      * @returns 
      */
-    deriva(chiave1, chiave2) {
+    xor(chiave1, chiave2) {
         let result = '';
         for (let i = 0; i < chiave1.length; i++) {
             result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]).string();
@@ -287,7 +285,7 @@ export class Cipher {
             </button>
             <button type="button" class="btn text apri_sezione nav" data-target="sezione_cifra">Cifra</button>
             <button type="button" class="btn text apri_sezione nav" data-target="sezione_decifra">Decifra</button>
-            <button type="button" class="btn text apri_sezione nav" data-target="sezione_codice_sorgente">
+            <button type="button" title="Codice Sorgente" class="btn text apri_sezione nav" data-target="sezione_codice_sorgente">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
                 </svg>

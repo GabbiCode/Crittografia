@@ -20,13 +20,11 @@ export class Cipher {
      * @param {*} chiave in formato esadecimale
      */
     cifra(testo, chiave) {
-        // rimuovo i caratteri illegali
-        testo = this.str.illegal_characters(testo);
         // inizializzo le variabili
-        testo = this.str.binario_(testo).string();
+        testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
         // XOR
-        testo = this.deriva(testo, chiavi[0]);
+        testo = this.xor(testo, chiavi[0]);
         // SBOX
         this.sbox.genera_sbox(chiavi[0]);
         testo = this.sbox.sostituzione_completa(testo, false);
@@ -49,7 +47,7 @@ export class Cipher {
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, false);
         // XOR
-        testo = this.deriva(testo, chiavi[2]);
+        testo = this.xor(testo, chiavi[2]);
         // ultime operazioni
         testo = this.cripto.ultima_fase(testo, lunghezza_blocchi_nulli);
         return testo;
@@ -67,7 +65,7 @@ export class Cipher {
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
         // XOR
-        testo = this.deriva(testo, chiavi[2]);
+        testo = this.xor(testo, chiavi[2]);
         // SBOX
         this.sbox.genera_sbox(chiavi[2]);
         testo = this.sbox.sostituzione_completa(testo, true);
@@ -94,9 +92,9 @@ export class Cipher {
         // rimuovo caratteri nulli
         testo = this.cripto.rimuovi_nulli(testo, null_bits);
         // XOR
-        testo = this.deriva(testo, chiavi[0]);
+        testo = this.xor(testo, chiavi[0]);
         // converto in formato normale
-        testo = this.str._binario(testo).string();
+        testo = this.str._binario(testo)._utf8().string();
         return testo;
     }
     /**
@@ -135,7 +133,7 @@ export class Cipher {
      * @param {*} chiave2 
      * @returns 
      */
-    deriva(chiave1, chiave2) {
+    xor(chiave1, chiave2) {
         let result = '';
         for (let i = 0; i < chiave1.length; i++) {
             result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]).string();

@@ -9,6 +9,7 @@ const cripto = new OperazioniCrittografiche();
 const cipher = new Cipher();
 let cifra = document.getElementById('d1');
 let decifra = document.getElementById('d2');
+const str = new Codifica();
 
 function cifra_testo() {
     const testo = $('#testo_cifra').val();

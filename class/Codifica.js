@@ -3,24 +3,6 @@ export class Codifica {
         this.data = data;
     }
 
-    illegal_characters(data) {
-        // Mappa dei caratteri speciali e delle loro sostituzioni
-        const characterMap = {
-            '‘': "'", // Sostituisci ‘ con '
-            '’': "'", // Sostituisci ’ con '
-            '“': '"', // Sostituisci “ con "
-            '”': '"', // Sostituisci ” con "
-            '–': '-', // Sostituisci – con -
-            '•': '*', // Sostituisci • con *
-            '…': '...', // Sostituisci … con ...
-            '€': 'EUR', // Sostituisci € con EUR (esempio)
-            // Aggiungi altre sostituzioni se necessario
-        };
-        // Utilizza una regex per cercare i caratteri speciali e sostituiscili
-        const regex = new RegExp(`[${Object.keys(characterMap).join('')}]`, 'g');
-        return data.replace(regex, match => characterMap[match] || match);
-    }
-
     utf8_(data) {
         data = data || this.data;
         this.data = unescape(encodeURIComponent(data.toString()));
