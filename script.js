@@ -15,7 +15,7 @@ function cifra_testo() {
     const testo = $('#testo_cifra').val();
     const chiave = $('#chiave_cifra').val();
     if (!testo || !chiave) return;
-    const testo_cifrato = cipher.cifra(testo, chiave);
+    const testo_cifrato = cipher.encrypt(testo, chiave);
     $('#d1').text(testo_cifrato);
 }
 
@@ -23,7 +23,7 @@ function decifra_testo() {
     const testo = $('#testo_decifra').val();
     const chiave = $('#chiave_decifra').val();
     if (!testo || !chiave) return;
-    const testo_decifrato = cipher.decifra(testo, chiave);
+    const testo_decifrato = cipher.decrypt(testo, chiave);
     $('#d2').text(testo_decifrato);
 }
 
@@ -79,12 +79,12 @@ function test() {
     const testo = random_frasi[numero_casuale(0, random_frasi.length - 1)];
     $('#testo_cifra').val(testo);
     $('#chiave_cifra').val(chiave);
-    const testo_cifrato = cipher.cifra(testo, chiave);
+    const testo_cifrato = cipher.encrypt(testo, chiave);
     $('#d1').text(testo_cifrato);
     // ---
     $('#testo_decifra').val(testo_cifrato);
     $('#chiave_decifra').val(chiave);
-    const testo_decifrato = cipher.decifra(testo_cifrato, chiave);
+    const testo_decifrato = cipher.decrypt(testo_cifrato, chiave);
     $('#d2').text(testo_decifrato);
 }
 
@@ -93,7 +93,8 @@ const random_frasi = [
     'Ciao',
     'La password è questa: ****',
     'Messaggio di prova',
-    'Sto eseguendo un test'
+    'Sto eseguendo un test',
+    '你 - こんにちは - Привет - שלום'
 ]
 
 function numero_casuale(min, max) {

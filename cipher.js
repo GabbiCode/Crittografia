@@ -15,11 +15,33 @@ export class Cipher {
         this.sbox = new Sbox();
     }
     /**
+     * Utilizza questo metodo per gestire gli errori durante la cifratura
+     */
+    encrypt(testo, chiave) {
+        try {
+            return this.cipher_(testo, chiave);
+        } catch (error) {
+            console.log("Errore durante la cifratura: " + error);
+            return ':(';
+        }
+    }
+    /**
+     * Utilizza questo metodo per gestire gli errori durante la decifratura
+     */
+    decrypt(testo, chiave) {
+        try {
+            return this._cipher(testo, chiave);
+        } catch (error) {
+            console.log("Errore durante la decifratura: " + error);
+            return ':(';
+        }
+    }
+    /**
      * Cifra del testo
      * @param {*} testo stringa
      * @param {*} chiave in formato esadecimale
      */
-    cifra(testo, chiave) {
+    cipher_(testo, chiave) {
         // inizializzo le variabili
         testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
@@ -57,7 +79,7 @@ export class Cipher {
      * @param {*} testo stringa base 64
      * @param {*} chiave in formato esadecimale
      */
-    decifra(testo, chiave) {
+    _cipher(testo, chiave) {
         const testo_bits = this.cripto.split_testo_decifrato(testo);
         const null_bits = parseInt(this.str._hex(testo_bits.bit.match(/\d+/g).join('')).string());
         testo = completa_base_64(testo_bits.testo);
