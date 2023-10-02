@@ -30,13 +30,13 @@ export class Hexagon {
      * Utilizza questo metodo per gestire gli errori durante la cifratura
      */
     encrypt(testo, chiave) {
-        const startTime = performance.now();
-        const testo_cifrato = this.hexagon_encrypt(testo, chiave);
-        const endTime = performance.now();
-        const tempoTrascorso = endTime - startTime;
-        console.log(`${tempoTrascorso} ms`);
-        return testo_cifrato;
         try {
+            const startTime = performance.now();
+            const testo_cifrato = this.hexagon_encrypt(testo, chiave);
+            const endTime = performance.now();
+            const tempoTrascorso = endTime - startTime;
+            console.log(`${tempoTrascorso} ms`);
+            return testo_cifrato;
         } catch (error) {
             console.log("Errore durante la cifratura: " + error);
             return ':(';
@@ -46,8 +46,8 @@ export class Hexagon {
      * Utilizza questo metodo per gestire gli errori durante la decifratura
      */
     decrypt(testo, chiave) {
-        return this.hexagon_decrypt(testo, chiave);
         try {
+            return this.hexagon_decrypt(testo, chiave);
         } catch (error) {
             console.log("Errore durante la decifratura: " + error);
             return ':(';
