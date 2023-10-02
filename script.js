@@ -1,11 +1,12 @@
-import { Cipher, Cripto, Sbox, Codifica } from './cipher.js';
+import { Hexagon, Cripto, Sbox, Codifica, ShiftRows } from './cipher.js';
 
-const cipher = new Cipher();
+const cipher = new Hexagon();
 let cifra = document.getElementById('d1');
 let decifra = document.getElementById('d2');
 const cripto = new Cripto();
 const str = new Codifica();
 const sbox = new Sbox();
+const shift_rows = new ShiftRows();
 
 function cifra_testo() {
     const testo = $('#testo_cifra').val();
@@ -23,12 +24,8 @@ function decifra_testo() {
     $('#d2').text(testo_decifrato);
 }
 
-function copy(testo) {
-	navigator.clipboard.writeText(testo);
-}
-
 let ultima_pagina = 'genera_chiave';
-$(document).ready(function() {
+$(document).ready(function () {
     $('#btn-cifra').on('click', () => {
         cifra_testo();
     });
@@ -45,13 +42,13 @@ $(document).ready(function() {
         $('#' + target).slideDown(250);
         ultima_pagina = target;
     });
-    $('#genera_chiave_casuale').click(()=>{
-        generaChiaveCasuale();    
+    $('#genera_chiave_casuale').click(() => {
+        generaChiaveCasuale();
     })
-    $('#l_chiave').change(()=>{
+    $('#l_chiave').change(() => {
         generaChiaveCasuale();
     });
-    $('#test_btn').click(()=>{
+    $('#test_btn').click(() => {
         test();
     });
     generaChiaveCasuale();
@@ -90,7 +87,7 @@ const random_frasi = [
 ]
 
 function numero_casuale(min, max) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function generaChiaveCasuale() {

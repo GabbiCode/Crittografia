@@ -3,17 +3,19 @@ import { Codifica } from './class/Codifica.js';
 import { Cripto } from './class/Cripto.js';
 import { Hash } from './class/Hash.js';
 import { Sbox } from './class/Sbox.js';
+import { ShiftRows } from './class/ShiftRows.js';
 
 export {
     Logica,
     Codifica,
     Cripto,
     Hash,
-    Sbox
+    Sbox,
+    ShiftRows
 };
 
-export class Cipher {
-    constructor(rounds = 24) {
+export class Hexagon {
+    constructor(rounds = 12) {
         this.blocchi = 128;
         this.rounds = rounds;
         this.logica = new Logica();
@@ -21,13 +23,20 @@ export class Cipher {
         this.cripto = new Cripto();
         this.hash = new Hash();
         this.sbox = new Sbox();
+        this.shift_rows = new ShiftRows();
+        this.reverse = false;
     }
     /**
      * Utilizza questo metodo per gestire gli errori durante la cifratura
      */
     encrypt(testo, chiave) {
+        const startTime = performance.now();
+        const testo_cifrato = this.hexagon_encrypt(testo, chiave);
+        const endTime = performance.now();
+        const tempoTrascorso = endTime - startTime;
+        console.log(`${tempoTrascorso} ms`);
+        return testo_cifrato;
         try {
-            return this.cifrario_(testo, chiave);
         } catch (error) {
             console.log("Errore durante la cifratura: " + error);
             return ':(';
@@ -37,8 +46,8 @@ export class Cipher {
      * Utilizza questo metodo per gestire gli errori durante la decifratura
      */
     decrypt(testo, chiave) {
+        return this.hexagon_decrypt(testo, chiave);
         try {
-            return this._cifrario(testo, chiave);
         } catch (error) {
             console.log("Errore durante la decifratura: " + error);
             return ':(';
@@ -49,37 +58,33 @@ export class Cipher {
      * @param {*} testo stringa
      * @param {*} chiave in formato esadecimale
      */
-    cifrario_(testo, chiave) {
+    hexagon_encrypt(testo, chiave) {
         // inizializzo le variabili
+        this.reverse = false;
         testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
+        // CHIAVE 0
         // XOR PARZIALE
         testo = this.cripto.xor_parziale(testo, chiavi[0]);
-        // SBOX
-        this.sbox.genera_sbox(chiavi[0]);
-        testo = this.sbox.sostituzione_completa(testo, false);
+        // --------
         // LENGTH BLOCCHI NULLI
-        const lunghezza_blocchi_nulli = this.cripto.blocks(testo, this.blocchi).len;
+        const suddivisione_in_blocchi = this.cripto.blocks(testo, this.blocchi);
+        const lunghezza_blocchi_nulli = suddivisione_in_blocchi.len;
+        testo = suddivisione_in_blocchi.testo;
+        // CHIAVE 1
         // ROUND
-        let chiave_round = chiavi[1];
-        // ---
+        const chiavi_cifratura = this.calcola_chiavi_round(chiavi[1]);
         for (let i = 0; i < this.rounds; i++) {
-            // CHIAVE
-            const nuova_chiave = this.chiave_round(chiave_round, i);
-            chiave_round = nuova_chiave.binario;
-            // SBOX
-            this.sbox.genera_sbox(chiave_round);
-            testo = this.sbox.sostituzione_completa(testo, false);
-            // PERMUTA
-            testo = this.round(testo, chiave_round, false);
+            // SHIFT, PERMUTA, XOR
+            testo = this.round(testo, chiavi_cifratura[i]);
         }
-        // SBOX
-        this.sbox.genera_sbox(chiavi[2]);
-        testo = this.sbox.sostituzione_completa(testo, false);
+        testo = testo.join('');
+        // --------
+        // CHIAVE 2
         // XOR PARZIALE
         testo = this.cripto.xor_parziale(testo, chiavi[2]);
         // ultime operazioni
-        testo = this.cripto.ultima_fase(testo, lunghezza_blocchi_nulli);
+        testo = this.cripto.ultima_fase_cifratura(testo, lunghezza_blocchi_nulli);
         return testo;
     }
     /**
@@ -87,40 +92,31 @@ export class Cipher {
      * @param {*} testo stringa base 64
      * @param {*} chiave in formato esadecimale
      */
-    _cifrario(testo, chiave) {
+    hexagon_decrypt(testo, chiave) {
         // calcolo i bit nulli
         const testo_bits = this.cripto.split_testo_decifrato(testo);
         const null_bits = parseInt(this.str._hex(testo_bits.bit.match(/\d+/g).join('')).string());
         testo = this.cripto.completa_base_64(testo_bits.testo);
         // inizializzo le variabili
+        this.reverse = true;
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
+        // CHIAVE 0
         // XOR PARZIALE
         testo = this.cripto.xor_parziale(testo, chiavi[2]);
-        // SBOX
-        this.sbox.genera_sbox(chiavi[2]);
-        testo = this.sbox.sostituzione_completa(testo, true);
-        // ROUND
-        let chiave_round = chiavi[1];
+        // --------
+        testo = this.cripto.blocks(testo, this.blocchi).testo;
+        // CHIAVE 1
         // pre calcola le chiavi
-        const chiavi_decifratura = [];
-        for (let i = 0; i < this.rounds; i++) {
-            const nuova_chiave = this.chiave_round(chiave_round, i);
-            chiave_round = nuova_chiave.binario;
-            chiavi_decifratura.push(chiave_round);
-        }
-        chiavi_decifratura.reverse();
+        const chiavi_decifratura = this.calcola_chiavi_round(chiavi[1], true);
         // ROUNDS
         for (let i = 0; i < this.rounds; i++) {
-            // PERMUTA
+            // XOR, PERMUTA, SHIFT
             testo = this.round(testo, chiavi_decifratura[i], true);
-            // SBOX
-            this.sbox.genera_sbox(chiavi_decifratura[i]);
-            testo = this.sbox.sostituzione_completa(testo, true);
         }
-        // SBOX
-        this.sbox.genera_sbox(chiavi[0]);
-        testo = this.sbox.sostituzione_completa(testo, true);
+        testo = testo.join('');
+        // --------
+        // CHIAVE 2
         // rimuovo caratteri nulli
         testo = this.cripto.rimuovi_nulli(testo, null_bits);
         // XOR PARZIALE
@@ -132,17 +128,21 @@ export class Cipher {
     /**
      * chiavi round
      * @param {*} chiave in binario
-     * @param {*} indice numero
      */
-    chiave_round(chiave, indice) {
-        chiave = this.str._binario(chiave).string();
-        chiave = this.hash._256(chiave + indice, 'TEXT');
-        chiave = this.hash._128(chiave, 1);
-        const chiave_binaria = this.str._hex(chiave).binario_().string();
-        return {
-            hex: chiave,
-            binario: chiave_binaria
+    chiave_round(chiave) {
+        chiave = this.hash._256(chiave, 'TEXT');
+        // chiave = this.hash._128(chiave, 1);
+        return this.str._hex(chiave).binario_().string();
+    }
+    /**
+     * calcola le chiavi per la cifratura / decifratura
+     */
+    calcola_chiavi_round(chiave) {
+        const chiavi = [];
+        for (let i = 0; i < this.rounds; i++) {
+            chiavi.push(this.chiave_round(chiave));
         }
+        return this.reverse ? chiavi.reverse() : chiavi;
     }
     /**
      * esegue un round
@@ -150,22 +150,24 @@ export class Cipher {
      * @param {*} chiave 
      * @returns 
      */
-    round(testo, chiave, reverse) {
-        // genero i blocchi
-        testo = this.cripto.blocks(testo, this.blocchi).blocks;
-        const blocchi_cifrati = [];
+    round(testo, chiave) {
+        // genero la sbox da utilizzare
         for (let i = 0; i < testo.length; i++) {
             /** reverse ?
-             * true => xor -> permuta
-             * false => permuta -> xor 
+             *  true => sbox -> shift -> xor
+             * false => xor -> shift -> sbox
             */
-            const operazione = reverse
-                ? (t) => this.permuta_round(this.xor_round(testo[i], chiave), chiave, reverse)
-                : (t) => this.xor_round(this.permuta_round(testo[i], chiave, reverse), chiave);
-            blocchi_cifrati.push(operazione(testo[i]));
+            const operazione = this.reverse
+                ? (t) => this.xor_round(
+                            this.shift_round(
+                                this.sbox_round(t)), chiave)
+                : (t) => this.sbox_round(
+                            this.shift_round(
+                                this.xor_round(t, chiave)));
+            testo[i] = operazione(testo[i]);
         }
         // restituisco il testo unito
-        return blocchi_cifrati.join('');
+        return testo;
     }
     /**
      * XOR utilizzata in round
@@ -176,8 +178,21 @@ export class Cipher {
     /**
      * PERMUTA utilizzata in round
      */
-    permuta_round = (t, c, r) => {
-        return this.cripto.permuta(t, c, r);
+    permuta_round = (t, c) => {
+        return this.cripto.permuta(t, c, this.reverse);
+    }
+    /**
+     * SHIFT ROUND utilizzata in round
+     */
+    shift_round = (t) => {
+        // SHIFT ROWS
+        return this.shift_rows.init(t).shift(this.reverse).string();
+    }
+    /**
+     * SBOX utilizzata nel round
+     */
+    sbox_round = (t) => {
+        return this.sbox.sostituzione_completa(t, this.reverse);
     }
     /**
      * esegue il log per controllare lo stato 

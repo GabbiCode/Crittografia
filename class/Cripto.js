@@ -12,7 +12,7 @@ export class Cripto {
      * @param {*} blockSize 
      * @returns 
     */
-    blocks(bits, dimensione = 64) {
+    blocks(bits, dimensione = 128) {
         const blocks = [];
         let lunghezza_ultimo_blocco = 0;
         // Dividi la stringa dei bit in blocchi di lunghezza blockSize
@@ -26,7 +26,7 @@ export class Cripto {
             blocks.push(block);
         }
         return {
-            blocks: blocks,
+            testo: blocks,
             len: lunghezza_ultimo_blocco
         };
     }
@@ -187,7 +187,7 @@ export class Cripto {
     /**
      * completa l'ultima fase della cifratura
      */
-    ultima_fase(testo, lunghezza_ultimo_blocco) {
+    ultima_fase_cifratura(testo, lunghezza_ultimo_blocco) {
         // converti in base 64
         testo = this.str._binario(testo).base64_().string();
         // eseguo uno split degli =
