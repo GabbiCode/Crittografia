@@ -31,52 +31,6 @@ export class Cripto {
         };
     }
     /**
-     * Permuta a blocchi una stringa binaria utilizzando una chiave
-     * @param {*} input binario
-     * @param {*} chiave binaria
-     * @returns 
-     */
-    permuta(input, chiave, reverse = false) {
-        if (input.length != chiave.length) {
-            throw new Error('Entrambi gli argomenti devono avere la stessa dimensione');
-        }
-        const bits = [...input];
-        let indice = this.genera_numeri_seed(chiave);
-        if (reverse) {
-            // Inverti l'array indice
-            const invertedIndice = [];
-            for (let i = 0; i < indice.length; i++) {
-                invertedIndice[indice[i]] = i;
-            }
-            indice = invertedIndice;
-        }
-        let risultato = '';
-        for (let i = 0; i < input.length; i++) {
-            // Esegui la permutazione
-            risultato += bits[indice[i]];
-        }
-        return risultato;
-    }
-    /**
-     * generatore di numeri pseudo casuali utilizzando un seed
-     * @param {*} stringaBinaria 
-     * @returns 
-     */
-    genera_numeri_seed(seed, n = null) {
-        n = n ? n : seed.length;
-        const results = [];
-        const rng = new Math.seedrandom(seed);
-        // Inizializza il generatore con la stringa binaria
-        for (let i = 0; i < n; i++) {
-            results.push(rng());
-        }
-        // Genera l'array finale basato sulla grandezza dei numeri in results
-        const finalArray = results.map((numero, i) => i).sort((a, b) => {
-            return Math.abs(results[a]) - Math.abs(results[b]);
-        });
-        return finalArray;
-    }
-    /**
      * rimuove i caratteri nulli
      */
     rimuovi_nulli(bits, n) {
@@ -91,17 +45,18 @@ export class Cripto {
      */
     get_3_key(input) {
         // Crea un oggetto jsSHA per l'hash SHA-384
-        const shaObj = new jsSHA('SHA-384', 'HEX');
+        const sha = new jsSHA('SHA-512', 'HEX');
         // Aggiungi l'input da hashare
-        shaObj.update(input);
+        sha.update(input);
         // Calcola l'hash SHA-384
-        const hashValue = shaObj.getHash('HEX');
-        // Dividi l'hash in tre parti uguali (ognuna da 128 bit)
-        const chunkSize = hashValue.length / 3;
+        const hash = sha.getHash('HEX');
+        // Dividi l'hash in 4 parti uguali (ognuna da 128 bit)
+        const sub_keys = hash.match(/.{32}/g);
+        const main_key = sub_keys[1] + sub_keys[2];
         const subKeys = [
-            this.str._hex(hashValue.slice(0, chunkSize)).binario_().string(),
-            this.str._hex(hashValue.slice(chunkSize, 2 * chunkSize)).binario_().string(),
-            this.str._hex(hashValue.slice(2 * chunkSize)).binario_().string()
+            this.str._hex(sub_keys[0]).binario_().string(),
+            main_key,
+            this.str._hex(sub_keys[3]).binario_().string()
         ];
         return subKeys;
     }

@@ -18,6 +18,7 @@ export class ShiftRows {
     shift(reverse) {
         for (let i = 1; i < 4; i++) {
             for (let j = 0; j < i; j++) {
+                // operazione diretta senza utilizzo di shift, pop, unshift, push
                 if (reverse) {
                     [this.blocco[i][0], this.blocco[i][1], this.blocco[i][2], this.blocco[i][3]] =
                     [this.blocco[i][3], this.blocco[i][0], this.blocco[i][1], this.blocco[i][2]];

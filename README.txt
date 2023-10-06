@@ -1,8 +1,9 @@
 Cifratura:
  - XOR chiave 0
- - OPERAZIONI PER OGNI ROUND Rounds (24) chiave 1
-   * nuova chiave_round = hash + indice
+ - OPERAZIONI PER OGNI ROUND Rounds (n) chiave 1
+   * nuova chiave_round = hash
    * OPERAZIONI PER OGNI BLOCCO chiave_round
+     - PERMUTA
      - XOR
      - SHIFT ROWS
      - SBOX
@@ -10,10 +11,11 @@ Cifratura:
 
 Decifratura:
  - XOR chiave 2
- - OPERAZIONI PER OGNI ROUND Rounds (24) chiave 1
+ - OPERAZIONI PER OGNI ROUND Rounds (n) chiave 1
    * OPERAZIONI PER OGNI BLOCCO chiave_round
      - SBOX
      - SHIFT ROWS
      - XOR
-   * nuova chiave_round = hash + indice
+     - PERMUTA
+   * nuova chiave_round = hash
  - XOR chiave 0

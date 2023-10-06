@@ -1,4 +1,4 @@
-import { Hexagon, Cripto, Sbox, Codifica, ShiftRows } from './cipher.js';
+import { Hexagon, Cripto, Sbox, Codifica, ShiftRows, MixColumns, PseudoRandomNumber as prn } from './cipher.js';
 
 const cipher = new Hexagon();
 let cifra = document.getElementById('d1');
@@ -7,6 +7,18 @@ const cripto = new Cripto();
 const str = new Codifica();
 const sbox = new Sbox();
 const shift_rows = new ShiftRows();
+const mix_columns = new MixColumns();
+
+// const k = '11101001001101011110000000001010111010001101100011001100001100010101000100100011010110101111100101000101011101001100111001011001';
+// const t = '00001110000100110111011010011001010011101001100100001011110101001001001011101100011100010110011010000111110000101101111110101000';
+
+// const r = mix_columns.init(t, k).mix(false);
+// console.log(r);
+// console.log(' --- ');
+// const reverse = mix_columns.init(r, k).mix(true);
+// console.log(reverse);
+// console.log(' --- ');
+// console.log(reverse == r);
 
 function cifra_testo() {
     const testo = $('#testo_cifra').val();

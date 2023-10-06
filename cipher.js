@@ -4,6 +4,8 @@ import { Cripto } from './class/Cripto.js';
 import { Hash } from './class/Hash.js';
 import { Sbox } from './class/Sbox.js';
 import { ShiftRows } from './class/ShiftRows.js';
+import { MixColumns } from './class/MixColumns.js';
+import { PseudoRandomNumber } from './class/PseudoRandomNumber.js';
 
 export {
     Logica,
@@ -11,7 +13,9 @@ export {
     Cripto,
     Hash,
     Sbox,
-    ShiftRows
+    ShiftRows,
+    MixColumns,
+    PseudoRandomNumber
 };
 
 export class Hexagon {
@@ -24,18 +28,19 @@ export class Hexagon {
         this.hash = new Hash();
         this.sbox = new Sbox();
         this.shift_rows = new ShiftRows();
+        this.prn = new PseudoRandomNumber();
         this.reverse = false;
     }
     /**
      * Utilizza questo metodo per gestire gli errori durante la cifratura
      */
     encrypt(testo, chiave) {
+        const startTime = performance.now();
+        const testo_cifrato = this.hexagon_encrypt(testo, chiave);
         try {
-            const startTime = performance.now();
-            const testo_cifrato = this.hexagon_encrypt(testo, chiave);
             const endTime = performance.now();
             const tempoTrascorso = endTime - startTime;
-            console.log(`${tempoTrascorso} ms`);
+            $('#tempo_di_cifratura').html(`${tempoTrascorso.toFixed(3)} ms`);
             return testo_cifrato;
         } catch (error) {
             console.log("Errore durante la cifratura: " + error);
@@ -75,7 +80,7 @@ export class Hexagon {
         // ROUND
         const chiavi_cifratura = this.calcola_chiavi_round(chiavi[1]);
         for (let i = 0; i < this.rounds; i++) {
-            // SHIFT, PERMUTA, XOR
+            // XOR, SHIFT, SBOX
             testo = this.round(testo, chiavi_cifratura[i]);
         }
         testo = testo.join('');
@@ -111,7 +116,7 @@ export class Hexagon {
         const chiavi_decifratura = this.calcola_chiavi_round(chiavi[1], true);
         // ROUNDS
         for (let i = 0; i < this.rounds; i++) {
-            // XOR, PERMUTA, SHIFT
+            // SBOX, SHIFT, XOR
             testo = this.round(testo, chiavi_decifratura[i], true);
         }
         testo = testo.join('');
@@ -130,9 +135,9 @@ export class Hexagon {
      * @param {*} chiave in binario
      */
     chiave_round(chiave) {
-        chiave = this.hash._256(chiave, 'TEXT');
-        // chiave = this.hash._128(chiave, 1);
-        return this.str._hex(chiave).binario_().string();
+        chiave = this.hash._256(chiave, 'HEX');
+        chiave = this.str._hex(chiave).binario_().string();
+        return chiave;
     }
     /**
      * calcola le chiavi per la cifratura / decifratura
@@ -140,7 +145,8 @@ export class Hexagon {
     calcola_chiavi_round(chiave) {
         const chiavi = [];
         for (let i = 0; i < this.rounds; i++) {
-            chiavi.push(this.chiave_round(chiave));
+            chiave = this.chiave_round(chiave);
+            chiavi.push(chiave.match(/.{1,128}/g));
         }
         return this.reverse ? chiavi.reverse() : chiavi;
     }
@@ -151,19 +157,22 @@ export class Hexagon {
      * @returns 
      */
     round(testo, chiave) {
-        // genero la sbox da utilizzare
+        this.prn.init(chiave[0], 128, this.reverse);
         for (let i = 0; i < testo.length; i++) {
             /** reverse ?
-             *  true => sbox -> shift -> xor
-             * false => xor -> shift -> sbox
+             *  true => sbox -> shift -> xor -> permuta
+             * false => permuta -> xor -> shift -> sbox
             */
+            const chiave_round = i % 2 == 0 ? chiave[0] : chiave[1];
             const operazione = this.reverse
-                ? (t) => this.xor_round(
-                            this.shift_round(
-                                this.sbox_round(t)), chiave)
+                ? (t) => this.permuta_round(
+                            this.xor_round(
+                                this.shift_round(
+                                    this.sbox_round(t)), chiave_round))
                 : (t) => this.sbox_round(
                             this.shift_round(
-                                this.xor_round(t, chiave)));
+                                this.xor_round(
+                                    this.permuta_round(t), chiave_round)));
             testo[i] = operazione(testo[i]);
         }
         // restituisco il testo unito
@@ -178,8 +187,8 @@ export class Hexagon {
     /**
      * PERMUTA utilizzata in round
      */
-    permuta_round = (t, c) => {
-        return this.cripto.permuta(t, c, this.reverse);
+    permuta_round = (t) => {
+        return this.prn.permuta(t);
     }
     /**
      * SHIFT ROUND utilizzata in round
@@ -198,6 +207,6 @@ export class Hexagon {
      * esegue il log per controllare lo stato 
      */
     check(testo) {
-        console.log(this.str._binario(testo).base64_().string());
+        console.log(this.str._binario(testo.join('')).base64_().string());
     }
 }
