@@ -165,7 +165,7 @@ export class Cripto {
     xor_parziale(chiave1, chiave2) {
         let result = '';
         for (let i = 0; i < chiave1.length; i++) {
-            result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]).string();
+            result += this.logica.xor(chiave1[i], chiave2[i % chiave2.length]);
         }
         return result;
     }
@@ -179,7 +179,7 @@ export class Cripto {
     xor_completa(chiave1, chiave2) {
         let result = '';
         for (let i = 0; i < chiave1.length; i++) {
-            result += this.logica.xor(chiave1[i], chiave2[i]).string();
+            result += this.logica.xor(chiave1[i], chiave2[i]);
         }
         return result;
     }

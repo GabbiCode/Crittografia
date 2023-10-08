@@ -4,7 +4,6 @@ import { Cripto } from './class/Cripto.js';
 import { Hash } from './class/Hash.js';
 import { Sbox } from './class/Sbox.js';
 import { ShiftRows } from './class/ShiftRows.js';
-import { MixColumns } from './class/MixColumns.js';
 import { PseudoRandomNumber } from './class/PseudoRandomNumber.js';
 
 export {
@@ -14,21 +13,20 @@ export {
     Hash,
     Sbox,
     ShiftRows,
-    MixColumns,
     PseudoRandomNumber
 };
 
 export class Hexagon {
-    constructor(rounds = 12) {
+    constructor(rounds = 24) {
         this.blocchi = 128;
         this.rounds = rounds;
-        this.logica = new Logica();
         this.str = new Codifica();
         this.cripto = new Cripto();
         this.hash = new Hash();
         this.sbox = new Sbox();
         this.shift_rows = new ShiftRows();
-        this.prn = new PseudoRandomNumber();
+        this.prn1 = new PseudoRandomNumber();
+        this.prn2 = new PseudoRandomNumber();
         this.reverse = false;
     }
     /**
@@ -37,9 +35,9 @@ export class Hexagon {
     encrypt(testo, chiave) {
         const startTime = performance.now();
         const testo_cifrato = this.hexagon_encrypt(testo, chiave);
+        const endTime = performance.now();
+        const tempoTrascorso = endTime - startTime;
         try {
-            const endTime = performance.now();
-            const tempoTrascorso = endTime - startTime;
             $('#tempo_di_cifratura').html(`${tempoTrascorso.toFixed(3)} ms`);
             return testo_cifrato;
         } catch (error) {
@@ -68,6 +66,8 @@ export class Hexagon {
         this.reverse = false;
         testo = this.str.utf8_(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
+        this.prn1.init(chiavi[0], 128, this.reverse);
+        this.prn2.init(chiavi[2], 128, this.reverse);
         // CHIAVE 0
         // XOR PARZIALE
         testo = this.cripto.xor_parziale(testo, chiavi[0]);
@@ -106,6 +106,8 @@ export class Hexagon {
         this.reverse = true;
         testo = this.str._base64(testo).binario_().string();
         const chiavi = this.cripto.get_3_key(chiave);
+        this.prn1.init(chiavi[0], 128, this.reverse);
+        this.prn2.init(chiavi[2], 128, this.reverse);
         // CHIAVE 0
         // XOR PARZIALE
         testo = this.cripto.xor_parziale(testo, chiavi[2]);
@@ -157,22 +159,22 @@ export class Hexagon {
      * @returns 
      */
     round(testo, chiave) {
-        this.prn.init(chiave[0], 128, this.reverse);
         for (let i = 0; i < testo.length; i++) {
             /** reverse ?
              *  true => sbox -> shift -> xor -> permuta
              * false => permuta -> xor -> shift -> sbox
             */
-            const chiave_round = i % 2 == 0 ? chiave[0] : chiave[1];
+            const pari = i % 2 == 0;
+            const chiave_round = pari ? chiave[0] : chiave[1];
             const operazione = this.reverse
                 ? (t) => this.permuta_round(
                             this.xor_round(
                                 this.shift_round(
-                                    this.sbox_round(t)), chiave_round))
+                                    this.sbox_round(t)), chiave_round), pari)
                 : (t) => this.sbox_round(
                             this.shift_round(
                                 this.xor_round(
-                                    this.permuta_round(t), chiave_round)));
+                                    this.permuta_round(t, pari), chiave_round)));
             testo[i] = operazione(testo[i]);
         }
         // restituisco il testo unito
@@ -187,8 +189,8 @@ export class Hexagon {
     /**
      * PERMUTA utilizzata in round
      */
-    permuta_round = (t) => {
-        return this.prn.permuta(t);
+    permuta_round = (t, pari) => {
+        return pari ? this.prn1.permuta(t) : this.prn2.permuta(t);
     }
     /**
      * SHIFT ROUND utilizzata in round
